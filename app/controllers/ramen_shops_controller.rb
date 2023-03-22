@@ -4,6 +4,11 @@ class RamenShopsController < ApplicationController
   # GET /ramen_shops or /ramen_shops.json
   def index
     @ramen_shops = RamenShop.all
+
+    respond_to do |format|
+      format.html 
+      format.json { render json: @ramen_shops } 
+    end
   end
 
   # GET /ramen_shops/1 or /ramen_shops/1.json

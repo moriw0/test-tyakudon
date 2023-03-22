@@ -13,7 +13,7 @@
 
 <!-- Googleマップ表示エリア(地図を表示) -->
 <div id="map" style="width:620px; height:400px"></div>
-
+<button onclick="getLocation()">現在値を取得</button>
 <!-- Googleマップ表示用の Javascript -->
 <script>
   function initMap(){
@@ -42,5 +42,20 @@
     });
   }
   </script>
-
   <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API_KEY'] %>&callback=initMap" async defer></script>
+  <script>
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else { 
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+    
+    function showPosition(position) {
+      var latitude = position.coords.latitude;
+      var longitude = position.coords.longitude;
+      console.log(latitude)
+      console.log(longitude)
+    }
+  </script>
