@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_20_110646) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_24_113602) do
   create_table "ramen_shops", force: :cascade do |t|
     t.string "name"
     t.string "address"
@@ -21,4 +21,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_20_110646) do
     t.float "longitude"
   end
 
+  create_table "records", force: :cascade do |t|
+    t.integer "ramen_shop_id", null: false
+    t.datetime "start_at"
+    t.datetime "stop_at"
+    t.datetime "retire_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ramen_shop_id"], name: "index_records_on_ramen_shop_id"
+  end
+
+  add_foreign_key "records", "ramen_shops"
 end

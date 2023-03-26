@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ramen_shop: one
+  start_at: 2023-03-24 20:36:02
+  stop_at: 2023-03-24 20:36:02
+  retire_at: 2023-03-24 20:36:02
+
+two:
+  ramen_shop: two
+  start_at: 2023-03-24 20:36:02
+  stop_at: 2023-03-24 20:36:02
+  retire_at: 2023-03-24 20:36:02
