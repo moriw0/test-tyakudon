@@ -1,3 +1,13 @@
+<h1>ラーメン店舗一覧</h1>
+<ul>
+  <% @ramen_shops.each do |shop| %>
+    <li>
+      <%= shop.name %>
+      <%= link_to '時間計測', ramen_shop_path(shop) %>
+    </li>
+  <% end %>
+</ul>
+
 <!-- Googleマップ表示エリア(地図を表示) -->
 <div id="map" style="width:620px; height:400px"></div>
 <!-- Googleマップ表示用の Javascript -->

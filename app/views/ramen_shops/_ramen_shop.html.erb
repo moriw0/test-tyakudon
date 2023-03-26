@@ -8,10 +8,11 @@
     <strong>Address:</strong>
     <%= ramen_shop.address %>
   </p>
-
+  <p>経過時間: <span id="elapsed-time">00:00:00</span></p>
   <p>
-    <strong>Plate:</strong>
-    <%= ramen_shop.plate %>
+    <button id="start">スタート</button>
+    <button id="stop" disabled>ストップ</button>
+    <button id="retire" disabled>リタイア</button>
   </p>
-
 </div>
+<%#= javascript_pack_tag 'timer' %>
