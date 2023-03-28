@@ -8,14 +8,17 @@
     <strong>Address:</strong>
     <%= ramen_shop.address %>
   </p>
-  <p>経過時間: <span id="elapsed-time">00:00:00</span></p>
-  <p>
-    <button id="start">スタート</button>
-    <button id="stop" disabled>ストップ</button>
-    <button id="retire" disabled>リタイア</button>
-    <button id="reset" disabled>リセット</button>
-  </p>
+  <div id="container">
+    <div id="time">00:00:00.000</div>
+    <div id="buttons">
+      <input id="start" type="button" value="接続！">
+      <input id="stop" type="button" value="休憩" disabled="true">
+      <input id="end" type="button" value="着丼！" disabled="true">
+      <input id="reset" type="button" value="はじめから" disabled="true">
+      <input id="retire" type="button" value="離脱" disabled="true">
+    </div>
+  </div>  
 </div>
 <% content_for :js do %>
-  <%= javascript_import_module_tag "timer" %>
+  <%= javascript_import_module_tag "stopwatch" %>
 <% end %>
