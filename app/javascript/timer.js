@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("reset");
   
   // タイマーの状態管理
-  let startTime = localStorage.getItem("start_time");
+  // let startTime = localStorage.getItem("start_time");
+  let startTime
   let stopTime = 0;
   let timerID;
 
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     resetBtn.disabled = true;
     retireBtn.disabled = true;
     startTime = Date.now()
-    localStorage.setItem("start_time", startTime);
+    // localStorage.setItem("start_time", startTime);
     timerID = setInterval(updateElapsedTime, 10);
   });
   
@@ -46,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     endBtn.disabled = true;
     resetBtn.disabled = false;
     retireBtn.disabled = false;
-    localStorage.removeItem("start_time");
+    // localStorage.removeItem("start_time");
     clearInterval(timerID);
     stopTime += (Date.now() - startTime);
     // submitElapsedTime("stop");
@@ -65,9 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
     endBtn.disabled = true;
     resetBtn.disabled = true;
     retireBtn.disabled = true;
-    localStorage.removeItem("start_time");
+    // localStorage.removeItem("start_time");
     elapsedTimeEl.textContent = "00:00:00.000";
-    startTime = null;
+    // startTime = null;
     stopTime = 0;
   });
   // // 経過時間をRailsのRecordsコントローラーのcreateアクションに送信する関数
