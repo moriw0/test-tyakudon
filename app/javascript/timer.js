@@ -1,76 +1,74 @@
 document.addEventListener("DOMContentLoaded", () => {
-  let startTime = sessionStorage.getItem("start_time");
-  const elapsedTimeEl = document.getElementById("elapsed-time");
+  const elapsedTimeEl = document.getElementById("time");
   const startBtn = document.getElementById("start");
   const stopBtn = document.getElementById("stop");
+  const endBtn = document.getElementById("end");
   const retireBtn = document.getElementById("retire");
   const resetBtn = document.getElementById("reset");
-
+  
   // タイマーの状態管理
-  let timer;
+  let startTime = localStorage.getItem("start_time");
+  let stopTime = 0;
+  let timerID;
 
   // 経過時間をフォーマットする関数
   const formatElapsedTime = (time) => {
-    const hours = Math.floor(time / 3600).toString().padStart(2, "0");
-    const minutes = Math.floor((time % 3600) / 60).toString().padStart(2, "0");
-    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
-    
-    return `${hours}:${minutes}:${seconds}`;
+    const h = String(time.getHours()-9).padStart(2, '0');
+    const m = String(time.getMinutes()).padStart(2, '0');
+    const s = String(time.getSeconds()).padStart(2, '0');
+    const ms = String(time.getMilliseconds()).padStart(3, '0');
+
+    return `${h}:${m}:${s}.${ms}`;
   };
 
   // 経過時間を更新する関数
   const updateElapsedTime = () => {
-    const currentTime = new Date().getTime();
-    const elapsedTime = Math.floor((currentTime - startTime) / 1000);
+    const currentTime = Date.now()
+    const elapsedTime = new Date(currentTime - startTime + stopTime);
     elapsedTimeEl.textContent = formatElapsedTime(elapsedTime);
   };
 
-  // スタートボタンを押したときの処理
-  // startBtn.addEventListener("click", () => {
-  //   startTime = new Date();
-  //   timer = setInterval(updateElapsedTime, 1000);
-  //   startBtn.disabled = true;
-  //   stopBtn.disabled = false;
-  //   retireBtn.disabled = false;
-  //   resetBtn.disabled = false;
-  // });
   startBtn.addEventListener("click", () => {
-    if (startTime === null) {
-      startTime = new Date().getTime();
-    }
-    sessionStorage.setItem("start_time", new Date().getTime());
-    timer = setInterval(updateElapsedTime, 1000);
     startBtn.disabled = true;
     stopBtn.disabled = false;
-    retireBtn.disabled = false;
-    resetBtn.disabled = false;
+    endBtn.disabled = false;
+    resetBtn.disabled = true;
+    retireBtn.disabled = true;
+    startTime = Date.now()
+    localStorage.setItem("start_time", startTime);
+    timerID = setInterval(updateElapsedTime, 10);
   });
   
   // ストップボタンを押したときの処理
   stopBtn.addEventListener("click", () => {
-    clearInterval(timer);
     startBtn.disabled = false;
     stopBtn.disabled = true;
-    retireBtn.disabled = true;
+    endBtn.disabled = true;
     resetBtn.disabled = false;
+    retireBtn.disabled = false;
+    localStorage.removeItem("start_time");
+    clearInterval(timerID);
+    stopTime += (Date.now() - startTime);
     // submitElapsedTime("stop");
   });
   
   // リタイアボタンを押したときの処理
   retireBtn.addEventListener("click", () => {
-    clearInterval(timer);
+    clearInterval(timerID);
     // submitElapsedTime("retire");
   });
   
   // リセットボタンのクリックイベント
   resetBtn.addEventListener("click", () => {
-    clearInterval(timer);
-    elapsedTimeEl.textContent = "00:00:00";
-    sessionStorage.removeItem("start_time");
-    startTime = null;
     startBtn.disabled = false;
     stopBtn.disabled = true;
+    endBtn.disabled = true;
     resetBtn.disabled = true;
+    retireBtn.disabled = true;
+    localStorage.removeItem("start_time");
+    elapsedTimeEl.textContent = "00:00:00.000";
+    startTime = null;
+    stopTime = 0;
   });
   // // 経過時間をRailsのRecordsコントローラーのcreateアクションに送信する関数
   // const submitElapsedTime = (action) => {
@@ -104,12 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // };
 
   // セッションに開始時刻が格納されている場合、タイマーを再開する
-  if (startTime) {
-    timer = setInterval(updateElapsedTime, 1000);
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
-    retireBtn.disabled = false;
-    resetBtn.disabled = false;
-  }
+  // if (startTime) {
+  //   timerID = setInterval(updateElapsedTime, 10);
+  //   startBtn.disabled = true;
+  //   stopBtn.disabled = false;
+  //   retireBtn.disabled = false;
+  //   resetBtn.disabled = false;
+  // }
 });
 
