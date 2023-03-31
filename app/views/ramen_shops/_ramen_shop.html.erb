@@ -1,3 +1,7 @@
+<% content_for :js do %>
+  <%= javascript_import_module_tag "timer" %>
+<% end %>
+
 <div id="<%= dom_id ramen_shop %>">
   <p>
     <strong>Name:</strong>
@@ -19,6 +23,3 @@
     </div>
   </div>  
 </div>
-<% content_for :js do %>
-  <%= javascript_import_module_tag "timer" %>
-<% end %>

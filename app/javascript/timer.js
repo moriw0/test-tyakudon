@@ -1,23 +1,22 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("turbo:load", () => {
   const elapsedTimeEl = document.getElementById("time");
   const startBtn = document.getElementById("start");
   const stopBtn = document.getElementById("stop");
   const endBtn = document.getElementById("end");
   const retireBtn = document.getElementById("retire");
   const resetBtn = document.getElementById("reset");
-  
-  // タイマーの状態管理
-  // let startTime = localStorage.getItem("start_time");
-  let startTime
-  let stopTime = 0;
+
+  let startTime;
+  let elapsedTime;
+  let storedElapsedTime = Number(localStorage.stored_elapsed_time) || 0;
   let timerID;
 
   // 経過時間をフォーマットする関数
   const formatElapsedTime = (time) => {
-    const h = String(time.getHours()-9).padStart(2, '0');
-    const m = String(time.getMinutes()).padStart(2, '0');
-    const s = String(time.getSeconds()).padStart(2, '0');
-    const ms = String(time.getMilliseconds()).padStart(3, '0');
+    const h = String(time.getUTCHours()).padStart(2, '0');
+    const m = String(time.getUTCMinutes()).padStart(2, '0');
+    const s = String(time.getUTCSeconds()).padStart(2, '0');
+    const ms = String(time.getUTCMilliseconds()).padStart(3, '0');
 
     return `${h}:${m}:${s}.${ms}`;
   };
@@ -25,52 +24,54 @@ document.addEventListener("DOMContentLoaded", () => {
   // 経過時間を更新する関数
   const updateElapsedTime = () => {
     const currentTime = Date.now()
-    const elapsedTime = new Date(currentTime - startTime + stopTime);
+    elapsedTime = new Date(currentTime - startTime + storedElapsedTime);
     elapsedTimeEl.textContent = formatElapsedTime(elapsedTime);
   };
 
-  startBtn.addEventListener("click", () => {
+  const startTimer = () => {
     startBtn.disabled = true;
     stopBtn.disabled = false;
     endBtn.disabled = false;
     resetBtn.disabled = true;
     retireBtn.disabled = true;
     startTime = Date.now()
-    // localStorage.setItem("start_time", startTime);
     timerID = setInterval(updateElapsedTime, 10);
-  });
-  
-  // ストップボタンを押したときの処理
-  stopBtn.addEventListener("click", () => {
+  }
+
+  const stopTimer = () => {
     startBtn.disabled = false;
     stopBtn.disabled = true;
     endBtn.disabled = true;
     resetBtn.disabled = false;
     retireBtn.disabled = false;
-    // localStorage.removeItem("start_time");
     clearInterval(timerID);
-    stopTime += (Date.now() - startTime);
+    storedElapsedTime += (Date.now() - startTime);
     // submitElapsedTime("stop");
-  });
-  
+  }
+
+  const resetTimer = () => {
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    endBtn.disabled = true;
+    resetBtn.disabled = true;
+    retireBtn.disabled = true;
+    elapsedTimeEl.textContent = "00:00:00.000";
+    clearInterval(timerID);
+    localStorage.removeItem("stored_elapsed_time");
+    storedElapsedTime = 0;
+    elapsedTime = 0;
+  }
+
+  startBtn.addEventListener("click", startTimer);
+  stopBtn.addEventListener("click", stopTimer);
+  resetBtn.addEventListener("click", resetTimer);
+
   // リタイアボタンを押したときの処理
   retireBtn.addEventListener("click", () => {
     clearInterval(timerID);
     // submitElapsedTime("retire");
   });
   
-  // リセットボタンのクリックイベント
-  resetBtn.addEventListener("click", () => {
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-    endBtn.disabled = true;
-    resetBtn.disabled = true;
-    retireBtn.disabled = true;
-    // localStorage.removeItem("start_time");
-    elapsedTimeEl.textContent = "00:00:00.000";
-    // startTime = null;
-    stopTime = 0;
-  });
   // // 経過時間をRailsのRecordsコントローラーのcreateアクションに送信する関数
   // const submitElapsedTime = (action) => {
   //   const currentTime = new Date().getTime();
@@ -102,13 +103,17 @@ document.addEventListener("DOMContentLoaded", () => {
   //   });
   // };
 
-  // セッションに開始時刻が格納されている場合、タイマーを再開する
-  // if (startTime) {
-  //   timerID = setInterval(updateElapsedTime, 10);
-  //   startBtn.disabled = true;
-  //   stopBtn.disabled = false;
-  //   retireBtn.disabled = false;
-  //   resetBtn.disabled = false;
-  // }
-});
+  // ローカルストレージに経過時間が格納されている場合、タイマーを再開する
+  if (storedElapsedTime) {
+    let unloadTime = Number(localStorage.unload_time) || 0;
+    storedElapsedTime = Date.now() - unloadTime + storedElapsedTime;
+    startTimer()
+  }
 
+  window.addEventListener("beforeunload", ()=> {
+    clearInterval(timerID);
+    storedElapsedTime = elapsedTime.getTime()
+    localStorage.setItem("stored_elapsed_time", storedElapsedTime);
+    localStorage.setItem("unload_time", Date.now());
+  });
+});
