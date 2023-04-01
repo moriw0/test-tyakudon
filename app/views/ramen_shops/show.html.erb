@@ -1,15 +1,11 @@
 <p style="color: green"><%= notice %></p>
-
 <%= render @ramen_shop %>
-
-<div>
-  <%= link_to "Edit this ramen shop", edit_ramen_shop_path(@ramen_shop) %> |
-  <%= link_to "Back to ramen shops", ramen_shops_path %>
-  <%= button_to "Destroy this ramen shop", @ramen_shop, method: :delete %>
-</div>
 
 <!-- Googleマップ表示エリア(地図を表示) -->
 <div id="map" style="width:620px; height:400px"></div>
+<div>
+  <%= link_to "Back to ramen shops", ramen_shops_path %>
+</div>
 
 <!-- Googleマップ表示用の Javascript -->
 <script>
@@ -22,18 +18,18 @@
     });
     let transitLayer = new google.maps.TransitLayer();
     transitLayer.setMap(map);
-
+    
     let contentString = '【住所】<%= @ramen_shop.address %>';
     let infowindow = new google.maps.InfoWindow({
       content: contentString
     });
-
+    
     let marker = new google.maps.Marker({
       position: mapPosition,
       map: map,
       title: contentString
     });
-
+    
     marker.addListener('click', function(){
       infowindow.open(map, marker);
     });
